@@ -1,6 +1,8 @@
 #include "Heap.h"
 
 #include <iostream>
+#include <math.h>
+#include <algorithm>
 
 Heap::Heap() : values(0){
 }
@@ -44,8 +46,69 @@ int Heap::removeLargestElement(){
 	int numToDelete = values[0];
 	values[0] = values[index];
 	values.pop_back();
-	index = 0;
 
+	correctSubHeap(0);
+
+	return numToDelete;
+}
+
+
+// Inserting n = size elements, Insert takes at most logn time => worst case = nlogn
+// topDownHeapify takes O(nlogn) time
+int Heap::topDownHeapify(int* intArray, int size) {
+	int success;
+	int amountInserted = 0;
+
+	// Insert n = size elements => this takes at most nlogn time 
+	// (since insert takes at most logn time)
+	for(int i = 0; i < size; i++) {
+		success = insert(intArray[i]);
+		if(success > 0) amountInserted++;
+	}
+	return amountInserted;
+}
+
+// O(n), since we only encounter logn time when the node being shifted down is the root
+// The worst case improves as the number of nodes increases making this more efficient then
+// Shifting up
+// So worsts case are as follows:
+//  For: 1 Node (level 0) : logn
+//       2 Nodes (level 1) : log(n-1)
+//       4 Nodes (Level 2) : log(n-2)
+//     2^i Nodes (Level i) : log(n - i)
+//     2^t Nodes (Level t) : log1 = 0 // last level it takes no time
+int Heap::bottomUpHeapify(int* intArray, int size) {
+	// throw all the elements into the vector in the order they are given
+	// unless the number is negative
+	int amountInserted = 0;
+	for(int i = 0; i < size; i++) {
+		if(intArray[i] > 0) {
+			values.push_back(intArray[i]);
+			amountInserted++;
+		}
+	}
+
+	if(values.size() == 0) return -1;
+
+	// need to find the index of the first element that is not in the last row of the tree
+	int sum = 0;
+	int n = 0;
+	while(sum < values.size()) {
+		sum += pow(2, n);
+		n++;
+	}
+	int index = n - 1;
+
+	while(index >= 0){
+		correctSubHeap(index);
+		index--;
+	}
+
+	return amountInserted;
+}
+
+// Takes O(logn) time, where n is the height of the node at index i
+int Heap::shiftDown(int index){
 	while(true) {
 		if((2*index+1) >= values.size()){
 			break;
@@ -71,24 +134,7 @@ int Heap::removeLargestElement(){
 			index = rightChildIndex(index);
 		}
 	}
-
-	return numToDelete;
-}
-
-
-// Inserting n = size elements, Insert takes at most logn time => worst case = nlogn
-// topDownHeapify takes O(nlogn) time
-int Heap::topDownHeapify(int* intArray, int size) {
-	int success;
-	int count = 0;
-
-	// Insert n = size elements => this takes at most nlogn time 
-	// (since insert takes at most logn time)
-	for(int i = 0; i < size; i++) {
-		success = insert(intArray[i]);
-		if(success > 0) count++;
-	}
-	return count;
+	return 1;
 }
 
 
