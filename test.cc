@@ -50,7 +50,24 @@ TEST_CASE( "Heap - Removing from empty heap") {
 
 	// empty heap should return -1
     REQUIRE(testHeap.removeLargestElement() == -1);
-   
+}
+
+TEST_CASE( "Heap - topDownHeapify function") {
+	Heap testHeap;
+	int testArray[8] = {10, 20, 5, 30, 12, 42, 17, 23};
+	
+	REQUIRE(testHeap.topDownHeapify(testArray, 8) == 8);
+
+    // elements should be removed largest to smallest
+	// 42 => 30 => 23 => 20 => 17 => 12 => 10 => 5
+    REQUIRE(testHeap.removeLargestElement() == 42);
+    REQUIRE(testHeap.removeLargestElement() == 30);
+    REQUIRE(testHeap.removeLargestElement() == 23);
+    REQUIRE(testHeap.removeLargestElement() == 20);
+    REQUIRE(testHeap.removeLargestElement() == 17);
+    REQUIRE(testHeap.removeLargestElement() == 12);
+    REQUIRE(testHeap.removeLargestElement() == 10);
+    REQUIRE(testHeap.removeLargestElement() == 5);
 }
 
 

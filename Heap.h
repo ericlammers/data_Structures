@@ -10,6 +10,7 @@ private:
 	
 public:
 	Heap();
+	int topDownHeapify(int* intArray, int size);
 	int insert(int num);
 	int removeLargestElement();
 	int size();
