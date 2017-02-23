@@ -47,7 +47,7 @@ int Heap::removeLargestElement(){
 	values[0] = values[index];
 	values.pop_back();
 
-	correctSubHeap(0);
+	shiftDown(0);
 
 	return numToDelete;
 }
@@ -100,7 +100,7 @@ int Heap::bottomUpHeapify(int* intArray, int size) {
 	int index = n - 1;
 
 	while(index >= 0){
-		correctSubHeap(index);
+		shiftDown(index);
 		index--;
 	}
 
